@@ -8,32 +8,42 @@ integrated_file_path = '/Users/sidareyanagi542/Desktop/授業資料/4年/研究�
 # 参照するExcelファイルのパス
 reference_file_path = '/Users/sidareyanagi542/Desktop/授業資料/4年/研究室/実験/0405/background.xlsx'
 
-# 参照するExcelファイルを読み込む
-ref_df = pd.read_excel(reference_file_path, engine='openpyxl')
-
 # 統合されたExcelファイルを開く
 wb = load_workbook(integrated_file_path)
+
+# 参照するExcelファイルを開く
+wb_ref = load_workbook(reference_file_path)
+ws_ref = wb_ref.active  # 参照ファイルのアクティブなシートを使用
 
 # 統合されたExcelファイルの各シートを処理
 for sheet_name in wb.sheetnames:
     ws = wb[sheet_name]
 
-    # C-D列の29行目から56行目の各セルについて処理
-    for row in range(29, 57):  # 29行目から56行目
-        for col in ['C', 'D']:  # C-D列
-            cell = ws[f"{col}{row}"]
-            # 参照するセルの値を取得 (参照DataFrameから値を取得)
-            ref_value = ref_df.loc[row-29, col].item() if not pd.isna(ref_df.loc[row-29, col]) else 0
+    # D列とE列の29行目以下の各セルについて処理
+    for row in range(29, ws.max_row + 1):  # 29行目から最終行まで
+        # D列: 参照ファイルの値を引く処理
+        d_cell = ws[f"D{row}"]
+        d_ref_cell = ws_ref[f"D{row}"]
+        try:
+            d_cell_value = float(d_cell.value) if d_cell.value is not None and d_cell.value != '' else 0
+            d_ref_cell_value = float(d_ref_cell.value) if d_ref_cell.value is not None and d_ref_cell.value != '' else 0
+            d_cell.value = d_cell_value - d_ref_cell_value
+        except ValueError:
+            print(f"変換エラー: シート '{sheet_name}', セル D{row} は数値に変換できません。")
 
-            try:
-                # セルの値を数値に変換し、参照セルの値を引く
-                if cell.value is not None and cell.value != '':
-                    cell_value = float(cell.value)
-                    cell.value = cell_value - ref_value
-            except ValueError as e:
-                print(f"変換エラー: シート '{sheet_name}', セル {col}{row}, エラー: {e}")
+        # E列: 1239.8をC列の値で割った結果を設定
+        c_cell = ws[f"C{row}"]
+        e_cell = ws[f"E{row}"]
+        try:
+            c_cell_value = float(c_cell.value) if c_cell.value is not None and c_cell.value != '' else 1  # 0による除算を避ける
+            if c_cell_value != 0:  # 0除算の防止
+                e_cell.value = 1239.8 / c_cell_value
+            else:
+                e_cell.value = "Error: Division by zero"
+        except ValueError:
+            e_cell.value = "Error: Invalid C column value"
 
 # 変更を保存
 wb.save(integrated_file_path)
 
-print(f"{integrated_file_path} の各シートのC-D列の29行目から56行目のセルが更新されました。")
+print(f"{integrated_file_path} の各シートのD列とE列の29行目以下が更新されました。")
