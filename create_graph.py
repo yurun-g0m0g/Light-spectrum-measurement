@@ -7,7 +7,14 @@ integrated_file_path = '/Users/sidareyanagi542/Desktop/授業資料/4年/研究�
 # 統合されたExcelファイルを開く
 wb = load_workbook(integrated_file_path)
 
-# 統合されたExcelファイルの各シートを処理
+# 融合されたグラフを作成
+combined_chart = ScatterChart()
+combined_chart.title = "Combined Scatter Chart"
+combined_chart.x_axis.title = 'E column values'
+combined_chart.y_axis.title = 'D column values'
+combined_chart.legend.position = 'r'  # 凡例を右側に配置
+
+# 統合されたExcelファイルの各シートを処理してグラフを作成
 for sheet_name in wb.sheetnames:
     ws = wb[sheet_name]
 
@@ -17,23 +24,17 @@ for sheet_name in wb.sheetnames:
     x_values = Reference(ws, min_col=5, min_row=min_row, max_row=max_row)  # E列
     y_values = Reference(ws, min_col=4, min_row=min_row, max_row=max_row)  # D列
 
-    # 散布図を作成
-    chart = ScatterChart()
-    chart.title = f"Scatter Chart for {sheet_name}"
-    chart.x_axis.title = 'E column values'
-    chart.y_axis.title = 'D column values'
-    chart.legend = None  # 凡例は不要
-
-    # データ系列を追加（点と点を線で繋がない設定）
-    series = Series(y_values, x_values, title_from_data=False)
+    # シートごとの散布図のデータ系列を作成して融合グラフに追加
+    series = Series(y_values, x_values, title=sheet_name)
     series.marker.symbol = "circle"  # 点を丸で表示
     series.graphicalProperties.line.noFill = True  # 線を表示しない
-    chart.series.append(series)
+    combined_chart.series.append(series)
 
-    # グラフをシートに追加
-    ws.add_chart(chart, "G10")  # グラフを配置するセルを指定（例: G10）
+# 最初のシートに融合されたグラフを追加
+first_sheet = wb.worksheets[0]
+first_sheet.add_chart(combined_chart, "G10")  # グラフを配置するセルを指定（例: G10）
 
 # 変更を保存
 wb.save(integrated_file_path)
 
-print(f"{integrated_file_path} の各シートに散布図が追加されました。")
+print(f"{integrated_file_path} に融合された散布図が追加されました。")
