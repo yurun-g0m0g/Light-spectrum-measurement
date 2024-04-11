@@ -2,7 +2,8 @@ import pandas as pd
 import os
 
 # 変換したいファイルがあるフォルダのパス
-folder_path = '/Users/sidareyanagi542/Desktop/授業資料/4年/0405'
+#ダウンロードしてから使用する場合、ここを編集してください！！
+folder_path = ''
 
 # xlsxファイルの数をカウントする変数
 xlsx_file_count = 0

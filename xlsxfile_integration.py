@@ -4,10 +4,12 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows  
 
 # 変換したいファイルがあるフォルダのパス
-folder_path = '/Users/sidareyanagi542/Desktop/授業資料/4年/研究室/実験/0405'
+#ダウンロードしてから使用する場合、ここを編集してください！！
+folder_path = ''
 
 # 統合されたシートを保存する新しいExcelファイルのパス
-output_file_path = '/Users/sidareyanagi542/Desktop/授業資料/4年/研究室/実験/0405/統合ファイル.xlsx'
+#ダウンロードしてから使用する場合、ここを編集してください！！
+output_file_path = ''
 
 # シート名とデータフレームを格納する一時的な辞書
 sheets_dict = {}

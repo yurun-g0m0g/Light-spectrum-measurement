@@ -2,7 +2,8 @@ from openpyxl import load_workbook
 from openpyxl.chart import ScatterChart, Reference, Series
 
 # 統合されたExcelファイルのパス
-integrated_file_path = '/Users/sidareyanagi542/Desktop/授業資料/4年/研究室/実験/0405/統合ファイル.xlsx'
+#ダウンロードしてから使用する場合、ここを編集してください！！
+integrated_file_path = ''
 
 # 統合されたExcelファイルを開く
 wb = load_workbook(integrated_file_path)
